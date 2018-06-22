@@ -42,6 +42,7 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
         String[] stateNames = new String[]{"Ocupado/Alquilado", "Libre"};
 
         String[] rooms = new String[departaments.size()];
+
         for (int i = 0; i < departaments.size(); i++) {
             rooms[i] = "Departamento " + (1 + i);
         }
@@ -50,33 +51,9 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
 
         XYIntervalSeries[] series = new XYIntervalSeries[departamentStates];
 
-        for (int i = 0; i < departamentStates; i++) {
-            series[i] = new XYIntervalSeries(stateNames[i]);
-            dataset.addSeries(series[i]);
-        }
+        addSeriesToDataset(dataset, departamentStates, stateNames, series);
 
-        for (Departament departament : departaments) {
-            int currentDepartament = departaments.indexOf(departament);
-            int currentState;
-            int days;
-            for (Map.Entry<State, Integer> entry : departament.getStatesWithDays().entrySet()) {
-
-                if(entry.getKey().equals(State.FREE)) {
-                    currentState = 0;
-                    System.out.println(currentState);
-                } else {
-                    currentState = 1;
-                    System.out.println(currentState);
-                }
-
-                days = entry.getValue();
-                series[currentState].add(
-                        currentDepartament,
-                        currentDepartament - 0.3, currentDepartament + 0.3, startTimes[currentDepartament],
-                        startTimes[currentDepartament] + 0.1, startTimes[currentDepartament] + days - 0.1);
-                startTimes[currentDepartament] += days;
-            }
-        }
+        addDepartamentsToSeries(departaments, startTimes, series);
 
         XYBarRenderer renderer = new XYBarRenderer();
         renderer.setUseYInterval(true);
@@ -86,6 +63,30 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
         getContentPane().add(new ChartPanel(chart));
     }
 
+    private void addSeriesToDataset(XYIntervalSeriesCollection dataset, int departamentStates, String[] stateNames, XYIntervalSeries[] series) {
+        for (int i = 0; i < departamentStates; i++) {
+            series[i] = new XYIntervalSeries(stateNames[i]);
+            dataset.addSeries(series[i]);
+        }
+    }
+
+    private void addDepartamentsToSeries(ArrayList<Departament> departaments, double[] startTimes, XYIntervalSeries[] series) {
+        departaments.forEach(departament -> {
+            int currentDepartament = departaments.indexOf(departament);
+            int currentState;
+            int days;
+
+            for (Map.Entry<State, Integer> entry : departament.getStatesWithDays().entrySet()) {
+                currentState = entry.getKey().equals(State.FREE) ? 1 : 0;
+                days = entry.getValue();
+                series[currentState].add(
+                        currentDepartament,
+                        currentDepartament - 0.3, currentDepartament + 0.3, startTimes[currentDepartament],
+                        startTimes[currentDepartament] + 0.1, startTimes[currentDepartament] + days - 0.1);
+                startTimes[currentDepartament] += days;
+            }
+        });
+    }
 
     private void abrirConexion() throws SQLException {
         conn = DriverManager.getConnection(conexion, usuario, contraseña);
@@ -110,7 +111,7 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
 
         Map<State, Integer> quick = new TreeMap<>();
         quick.put(State.RENTED, 10);
-        quick.put(State.FREE, 10);
+        quick.put(State.FREE, 5);
 
         Departament departament = new Departament();
         departament.setStatesWithDays(quick);
