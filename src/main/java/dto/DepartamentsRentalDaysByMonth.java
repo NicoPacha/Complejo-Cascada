@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 import org.jfree.chart.ChartPanel;
@@ -37,25 +38,16 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
 
     private void generateChart(ArrayList<Departament> departaments) {
         XYIntervalSeriesCollection dataset = new XYIntervalSeriesCollection();
-        //la departamentStates define cuales son los estados de un departamento, en este caso es Ocupado/Libre (2 estados)
         final int departamentStates = 2;
         String[] stateNames = new String[]{"Ocupado/Alquilado", "Libre"};
 
-        //6 different rooms      DEPARTAMENTOS SELECT A LA BASE DE DATOS
-        //ArrayList<String> rooms = null ;
         String[] rooms = new String[departaments.size()];
         for (int i = 0; i < departaments.size(); i++) {
             rooms[i] = "Departamento " + (1 + i);
         }
 
-        //totalStatesCount corresponde a los cambios de estado totales que va a tener ese alquiler en un periodo de tiempo
-        //Ejemplo: En el mes de mayo va a estar alquilado 2 veces y el resto del mes desocupado. eso son 3 estados.
-        int totalStatesCount = 10;
-
-        //Time, until thn e respective room is occupied
         double[] startTimes = new double[departaments.size()];
 
-        //Create series. Start and end times are used as y intervals, and the room is represented by the x value
         XYIntervalSeries[] series = new XYIntervalSeries[departamentStates];
 
         for (int i = 0; i < departamentStates; i++) {
@@ -64,7 +56,26 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
         }
 
         for (Departament departament : departaments) {
-            System.out.println("HOLA");
+            int currentDepartament = departaments.indexOf(departament);
+            int currentState;
+            int days;
+            for (Map.Entry<State, Integer> entry : departament.getStatesWithDays().entrySet()) {
+
+                if(entry.getKey().equals(State.FREE)) {
+                    currentState = 0;
+                    System.out.println(currentState);
+                } else {
+                    currentState = 1;
+                    System.out.println(currentState);
+                }
+
+                days = entry.getValue();
+                series[currentState].add(
+                        currentDepartament,
+                        currentDepartament - 0.3, currentDepartament + 0.3, startTimes[currentDepartament],
+                        startTimes[currentDepartament] + 0.1, startTimes[currentDepartament] + days - 0.1);
+                startTimes[currentDepartament] += days;
+            }
         }
 
         XYBarRenderer renderer = new XYBarRenderer();
