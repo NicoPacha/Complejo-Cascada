@@ -1,11 +1,13 @@
 package dto.chart.models;
 
+import models.Departamento;
+
 import java.util.Map;
 
 public class Departament {
 
     private Map<State, Integer> statesWithDays;
-    private String numero;
+    private Departamento departamento;
 
     public Map<State, Integer> getStatesWithDays() {
         return statesWithDays;
@@ -15,12 +17,19 @@ public class Departament {
         this.statesWithDays = statesWithDays;
     }
 
-    public String getNumero() {
-        return numero;
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
     }
 
+    @Override
+    public String toString() {
+        return "Departament{" +
+                "statesWithDays=" + statesWithDays +
+                ", departamento=" + departamento +
+                '}';
+    }
 }

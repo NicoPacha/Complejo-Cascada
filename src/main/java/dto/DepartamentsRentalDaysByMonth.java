@@ -6,10 +6,7 @@ import models.GestorDB;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -110,9 +107,45 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
 
 
         Map<State, Integer> quick = new TreeMap<>();
+        //END DATE: 10/11
         quick.put(State.RENTED, 10);
-        quick.put(State.FREE, 5);
+        // FECHA INICIO
+        {
+            Calendar previousRentendDateCalendar = Calendar.getInstance();
+            int endDayOfPreviousRent = previousRentendDateCalendar.get(Calendar.DAY_OF_MONTH);
+            endDayOfPreviousRent = 10;
 
+            Calendar nextRentendDateCalendar = Calendar.getInstance();
+            int nextDayOfPreviousRent = nextRentendDateCalendar.get(Calendar.DAY_OF_MONTH);
+            nextDayOfPreviousRent = 21;
+
+            int dayOfFreeRent = endDayOfPreviousRent - nextDayOfPreviousRent;
+            if (dayOfFreeRent == 0) {
+
+            } else {
+                quick.put(State.FREE, dayOfFreeRent);
+            }
+        }
+        //DEPARTAMENTOS
+
+        //TODOS LOS ALQUILERES
+
+        //DEPARTAMENTO CON ALQUILERES
+            //DEPARTAMENTO
+            //ARRAYLIST ALQUILERERS
+
+        //MIDDLEWARE PROCESADOR DE 'DEPRATMENTO CON ALQUILERES' HACIA 'DEPARTAMENTO CON ESTADOS LIBRES Y RENTADOS DEL MES DE X'
+        //obtainDepartamentsFreeDaysBetweenEachRent(...Alquileres)
+
+        //DEPARTAMENTO CON ESTADOS LIBRES Y RENTADOS DEL MES DE X
+            //Departamento
+            //MAP STATES AND DAYS
+
+        //INIT DAY: 21/11
+
+        //RENTED 3
+
+        quick.put(State.RENTED, 10);
         Departament departament = new Departament();
         departament.setStatesWithDays(quick);
 
