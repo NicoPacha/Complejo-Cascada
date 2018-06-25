@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
+import models.Middleware;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -144,7 +145,16 @@ public class DepartamentsRentalDaysByMonth extends ApplicationFrame {
         //INIT DAY: 21/11
 
         //RENTED 3
+        listavaciadedepartaments;
+        basededatos.allDepartamentosConAlquilerers*();
+        List<Departamento> departamentos;
+        fr(departamentos.recorrer) {
+            departamentWithRents = createDepartamentWithRents(departamento);
+            Departament dep = Middleware.main(departamentWithRents);
+            listaYanomasvacia.add(dep);
+        }
 
+        generateChart(listaDepartaments);
         quick.put(State.RENTED, 10);
         Departament departament = new Departament();
         departament.setStatesWithDays(quick);

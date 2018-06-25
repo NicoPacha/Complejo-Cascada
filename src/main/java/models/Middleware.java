@@ -12,13 +12,32 @@ public class Middleware {
         Departament departament = new Departament();
         departament.setDepartamento(departamentWithRents.getDepartamento());
 
-        Map<State,Integer> statesWithDays = new TreeMap<>();
+        Map<State, Integer> statesWithDays = new TreeMap<>();
+
+        Integer lastEndDateDayOfMonth = null;
+        Integer initialEndDateDayOfMonth;
+        Map<Integer, Integer> lastEndDayAndNextDay = new TreeMap<>();
 
         for (Alquiler alquiler : departamentWithRents.getAlquileres()) {
             int initialDayOfMonth = obtainCalendar(alquiler.getFecha_inicio());
             int endDayOfMonth = obtainCalendar(alquiler.getFecha_fin());
+
+            if (lastEndDateDayOfMonth == null) {
+                lastEndDateDayOfMonth = endDayOfMonth;
+            } else {
+                initialEndDateDayOfMonth = initialDayOfMonth;
+                lastEndDayAndNextDay.put(lastEndDateDayOfMonth, initialEndDateDayOfMonth);
+            }
+
             statesWithDays.put(State.RENTED, initialDayOfMonth - endDayOfMonth);
         }
+
+        lastEndDayAndNextDay.forEach((key, value) -> {
+            if(value != (key + 1)) {
+                statesWithDays.put(State.FREE, value - key);
+            }
+        });
+
         departament.setStatesWithDays(statesWithDays);
 
         return departament;
@@ -30,7 +49,7 @@ public class Middleware {
         return initialCalendar.get(Calendar.DAY_OF_MONTH);
     }
 
-    public static void main (String [ ] args) {
+    public static void main(String[] args) {
         DepartamentWithRents departamentWithRents = new DepartamentWithRents();
         Departamento departamento = new Departamento();
 
